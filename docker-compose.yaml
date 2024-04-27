@@ -1,10 +1,10 @@
 version: "3.7"
 services:
   server:
-    build: ./back
+    build: .
     hostname: server
     container_name: server
-    env_file: back/.env
+    env_file: .env
     ports:
       - ${PORT}:${PORT}
     restart: always
