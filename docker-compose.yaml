@@ -4,6 +4,8 @@ services:
     build: .
     hostname: server
     container_name: server
+    env_file:
+      - .env
     ports:
       - ${PORT}:${PORT}
     restart: always
