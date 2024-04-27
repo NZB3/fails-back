@@ -6,5 +6,5 @@ services:
     container_name: server
     env_file: back/.env
     ports:
-      - ${SERVER_PORT}:${SERVER_PORT}
+      - ${PORT}:${PORT}
     restart: always

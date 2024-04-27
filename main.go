@@ -1,17 +1,19 @@
 package main
 
 import (
-	"DaysWithoutFoults/controller"
-	counterlib "DaysWithoutFoults/counter"
 	"context"
 	"errors"
-	"github.com/rs/cors"
 	"log"
 	"net/http"
 	"os"
 	"os/signal"
 	"syscall"
 	"time"
+
+	"github.com/rs/cors"
+
+	"github.com/NZB3/without_fails_counter-back/controller"
+	counterlib "github.com/NZB3/without_fails_counter-back/counter"
 )
 
 func main() {
@@ -30,7 +32,11 @@ func main() {
 		AllowedOrigins: []string{"*"},
 	})
 
-	port := os.Getenv("SERVER_PORT")
+	port := os.Getenv("PORT")
+	if len(port) == 0 {
+		log.Fatal("$PORT must be set")
+	}
+
 	server := &http.Server{
 		Addr:    ":" + port,
 		Handler: c.Handler(router),
