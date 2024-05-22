@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"errors"
+	"flag"
 	"log"
 	"net/http"
 	"os"
@@ -17,9 +18,13 @@ import (
 )
 
 func main() {
+	var initValue int
+	flag.IntVar(&initValue, "value", 0, "initial value of counter")
+	flag.Parse()
+
 	ctx, _ := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
 
-	counter := counterlib.New()
+	counter := counterlib.New(int64(initValue))
 
 	ctrl := controller.NewController(&counter)
 

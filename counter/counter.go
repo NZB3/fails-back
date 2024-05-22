@@ -7,9 +7,14 @@ type Counter struct {
 	mu *sync.Mutex
 }
 
-func New() Counter {
+func New(values ...int64) Counter {
+	var value int64
+	if len(values) == 0 {
+		value = 0
+	}
+	value = values[0]
 	return Counter{
-		c:  0,
+		c:  value,
 		mu: &sync.Mutex{},
 	}
 }
