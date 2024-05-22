@@ -1,4 +1,7 @@
- 22
+version: '3.9'
+services:
+  server:
+    build: .
     hostname: server
     container_name: server
     env_file:
