@@ -28,6 +28,7 @@ func (c *controller) GetDaysCount(w http.ResponseWriter, r *http.Request) {
 	value := c.Counter.Value()
 
 	w.Header().Set("Content-Type", "application/json")
+
 	_, err := w.Write([]byte(fmt.Sprintf("{\"count\":%d}", value)))
 	if err != nil {
 		log.Println(err)
