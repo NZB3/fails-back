@@ -9,7 +9,7 @@ import (
 type counter interface {
 	Inc()
 	Res()
-	Value() int64
+	Value() int
 }
 
 type controller struct {
