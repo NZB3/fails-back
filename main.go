@@ -37,7 +37,7 @@ func main() {
 
 	ctrl := controller.NewController(&counter)
 
-	ticker := time.NewTicker(5 * time.Second)
+	ticker := time.NewTicker(24 * time.Hour)
 
 	router := http.NewServeMux()
 	router.HandleFunc("/", ctrl.GetDaysCount)
