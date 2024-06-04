@@ -2,20 +2,26 @@ package counter
 
 import "sync"
 
-type Counter struct {
-	c  int64
-	mu *sync.Mutex
+type observer interface {
+	Update(value int)
 }
 
-func New(values ...int64) Counter {
-	var value int64
-	if len(values) == 0 {
-		value = 0
-	}
-	value = values[0]
+type Counter struct {
+	c         int
+	mu        *sync.Mutex
+	observers []observer
+}
+
+func New(value *int, observers ...observer) Counter {
 	return Counter{
-		c:  value,
-		mu: &sync.Mutex{},
+		c: func(value *int) int {
+			if value == nil {
+				return 0
+			}
+			return *value
+		}(value),
+		mu:        &sync.Mutex{},
+		observers: observers,
 	}
 }
 
@@ -23,9 +29,10 @@ func (c *Counter) Inc() {
 	c.mu.Lock()
 	defer c.mu.Unlock()
 	c.c++
+	c.notifyObservers(c.c)
 }
 
-func (c *Counter) Value() int64 {
+func (c *Counter) Value() int {
 	c.mu.Lock()
 	defer c.mu.Unlock()
 	return c.c
@@ -35,4 +42,11 @@ func (c *Counter) Res() {
 	c.mu.Lock()
 	defer c.mu.Unlock()
 	c.c = 0
+	c.notifyObservers(c.c)
+}
+
+func (c *Counter) notifyObservers(value int) {
+	for _, observer := range c.observers {
+		observer.Update(value)
+	}
 }
