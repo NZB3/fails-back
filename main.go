@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"flag"
+	"github.com/NZB3/without_fails_counter-back/storage"
 	"log"
 	"net/http"
 	"os"
@@ -18,17 +19,25 @@ import (
 )
 
 func main() {
-	var initValue int
-	flag.IntVar(&initValue, "value", 0, "initial value of counter")
-	flag.Parse()
+	counterStorage := storage.NewCounterStorage("./counter.txt")
+
+	initValue, err := counterStorage.ReadValue()
+	if err != nil {
+		log.Println(err)
+	}
+
+	if initValue == 0 {
+		flag.IntVar(&initValue, "value", 0, "initial value of counter")
+		flag.Parse()
+	}
 
 	ctx, _ := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
 
-	counter := counterlib.New(int64(initValue))
+	counter := counterlib.New(&initValue, counterStorage)
 
 	ctrl := controller.NewController(&counter)
 
-	ticker := time.NewTicker(24 * time.Hour)
+	ticker := time.NewTicker(5 * time.Second)
 
 	router := http.NewServeMux()
 	router.HandleFunc("/", ctrl.GetDaysCount)
